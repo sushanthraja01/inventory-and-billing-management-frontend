@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://inventory-management-and-billing-system-12oh.onrender.com',
         changeOrigin: true,
       },
     },
