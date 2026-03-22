@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
 export default function BillingPage() {
@@ -8,6 +9,7 @@ export default function BillingPage() {
   const [alertMsg, setAlertMsg] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const availableStock = useRef({});
+  const { authFetch } = useAuth();
 
   const addToCart = async () => {
     setAlertMsg("");
@@ -20,7 +22,7 @@ export default function BillingPage() {
     }
 
     try {
-      const res = await fetch("/api/billing/getProduct", {
+      const res = await authFetch("/api/billing/getProduct", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifier }),
@@ -71,7 +73,7 @@ export default function BillingPage() {
   };
 
   const updateInventory = async (productId, qtyChange) => {
-    await fetch("/api/billing/updateInventory", {
+    await authFetch("/api/billing/updateInventory", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId, qtyChange }),
@@ -183,7 +185,7 @@ export default function BillingPage() {
       return;
     }
     try {
-      const res = await fetch(`/api/billing/suggestions?q=${query}`);
+      const res = await authFetch(`/api/billing/suggestions?q=${query}`);
       const names = await res.json();
       setSuggestions(names);
     } catch {

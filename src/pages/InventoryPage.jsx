@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
 export default function InventoryPage() {
@@ -10,15 +11,11 @@ export default function InventoryPage() {
     quantity: "",
     expire: "",
   });
+  const { authFetch } = useAuth();
 
   const fetchInventory = async () => {
     try {
-      const res = await fetch("/api/inventory");
-      if (res.status === 401) {
-        alert("Login required");
-        window.location.href = "/login";
-        return;
-      }
+      const res = await authFetch("/api/inventory");
       const data = await res.json();
       setProducts(data);
     } catch (err) {
@@ -33,7 +30,7 @@ export default function InventoryPage() {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/inventory", {
+      const res = await authFetch("/api/inventory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -62,7 +59,7 @@ export default function InventoryPage() {
     }
 
     try {
-      const res = await fetch(`/api/inventory/${product._id}`, {
+      const res = await authFetch(`/api/inventory/${product._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -89,7 +86,7 @@ export default function InventoryPage() {
     if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
-      const res = await fetch(`/api/inventory/${id}`, {
+      const res = await authFetch(`/api/inventory/${id}`, {
         method: "DELETE",
       });
 

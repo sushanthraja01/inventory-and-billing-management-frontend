@@ -1,15 +1,8 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/auth/check-login-status")
-      .then((res) => res.json())
-      .then((data) => setLoggedIn(data.loggedIn))
-      .catch(() => setLoggedIn(false));
-  }, []);
+  const { isLoggedIn } = useAuth();
 
   return (
     <>
@@ -33,7 +26,7 @@ export default function Navbar() {
           <Link to="/services">Services</Link>
           <Link to="/contactus">Contact us</Link>
         </nav>
-        {loggedIn ? (
+        {isLoggedIn ? (
           <div className="alert-icons">
             <Link to="/alerts">
               <button

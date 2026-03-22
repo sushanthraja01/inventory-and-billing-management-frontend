@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login, API_BASE } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -22,11 +24,13 @@ export default function LoginPage() {
         return;
       }
 
+      // Save token and user data to localStorage via context
+      login(data.token, data.user);
+
       if (data.hasAlerts) {
         alert("Expired/expiring products exist. Check Alerts page.");
       }
       navigate("/home");
-      window.location.reload();
     } catch (err) {
       alert("Login failed. Please try again.");
     }

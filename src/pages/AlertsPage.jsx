@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
 export default function AlertsPage() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { authFetch } = useAuth();
 
   useEffect(() => {
-    fetch("/api/alerts")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchAlerts = async () => {
+      try {
+        const res = await authFetch("/api/alerts");
+        const data = await res.json();
         setMessages(data.messages || []);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching alerts:", err);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    fetchAlerts();
   }, []);
 
   return (

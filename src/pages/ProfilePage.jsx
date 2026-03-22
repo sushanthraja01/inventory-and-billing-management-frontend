@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
 export default function ProfilePage() {
   const [email, setEmail] = useState("Loading...");
   const [name, setName] = useState("Loading...");
   const navigate = useNavigate();
+  const { logout, authFetch } = useAuth();
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const res = await fetch("/api/auth/user/profile");
+        const res = await authFetch("/api/auth/user/profile");
         const data = await res.json();
         setEmail(data.email || "No email");
         setName(data.name || "No name");
@@ -23,14 +25,9 @@ export default function ProfilePage() {
     loadProfile();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout");
-      navigate("/login");
-      window.location.reload();
-    } catch (err) {
-      alert("Logout failed");
-    }
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   return (

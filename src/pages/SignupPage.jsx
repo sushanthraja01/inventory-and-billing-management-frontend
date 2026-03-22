@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
 export default function SignupPage() {
@@ -8,11 +9,12 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [cpassword, setCpassword] = useState("");
   const navigate = useNavigate();
+  const { API_BASE } = useAuth();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch(`${API_BASE}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fname, email, password, cpassword }),
